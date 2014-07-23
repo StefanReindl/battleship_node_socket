@@ -18,6 +18,7 @@ var connections = {},
 		connectedUsers = [],
 		player1 = false,
 		player2 = false;
+		// activeplayer = player1;
 
 
 io.on('connection', function(socket){
@@ -29,7 +30,6 @@ io.on('connection', function(socket){
 			socket.emit('user exists');
 		} else {
 			
-
 			socket.username = username;
 			socket.userID = connectionID++;
 
@@ -67,6 +67,26 @@ io.on('connection', function(socket){
 			io.emit('creategame', username);
 		};
 	});
+
+  socket.on('shot', function (cell) {
+  	socket.broadcast.emit('shot', cell);
+  	console.log('shot fired');
+  });
+
+  socket.on('hit', function (cell) {
+  	socket.broadcast.emit('hit', cell);
+  	console.log('Hit received by server')
+  	//   	if (activeplayer === player1){
+  	// 	activeplayer === player2;
+  	// } else {
+  	// 	activeplayer === player1;
+  	// };
+  });
+
+  socket.on('miss', function (cell){
+  	socket.broadcast.emit('miss', cell);
+  	console.log('Miss received by server')
+  });
 
   socket.on('sendmessage', function(msg){
     console.log('in chat message event');
