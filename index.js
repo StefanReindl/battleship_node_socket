@@ -6,13 +6,6 @@ app.get('/', function(req, res){
   res.sendfile('index.html');
 });
 
-// io.on('connection', function(socket){
-//   console.log('a user connected');
-//   socket.on('disconnect', function(){
-//     console.log('user disconnected');
-//   });
-// });
-
 var connections = {},
 		connectionID = 0,
 		connectedUsers = [],
@@ -56,6 +49,7 @@ io.on('connection', function(socket){
 		}
 	});
 
+  // assign player1 or player2 
   socket.on('startgame', function (username) {
 		if (player1 && !player2) {
 			player2 = username;
@@ -68,11 +62,13 @@ io.on('connection', function(socket){
 		};
 	});
 
+  // direct shot to enemy 
   socket.on('shot', function (cell) {
   	socket.broadcast.emit('shot', cell);
   	console.log('shot fired');
   });
 
+  // direct hit to activeplayer
   socket.on('hit', function (cell) {
   	socket.broadcast.emit('hit', cell);
   	console.log('Hit received by server')
@@ -83,6 +79,7 @@ io.on('connection', function(socket){
   	// };
   });
 
+  // direct miss to activeplayer
   socket.on('miss', function (cell){
   	socket.broadcast.emit('miss', cell);
   	console.log('Miss received by server')
