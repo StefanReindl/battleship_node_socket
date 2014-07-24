@@ -6,19 +6,12 @@ app.get('/', function(req, res){
   res.sendfile('index.html');
 });
 
-// io.on('connection', function(socket){
-//   console.log('a user connected');
-//   socket.on('disconnect', function(){
-//     console.log('user disconnected');
-//   });
-// });
-
 var connections = {},
 		connectionID = 0,
 		connectedUsers = [],
 		player1 = false,
-		player2 = false;
-		// activeplayer = player1;
+		player2 = false,
+		active_user = player1;
 
 
 io.on('connection', function(socket){
@@ -56,6 +49,7 @@ io.on('connection', function(socket){
 		}
 	});
 
+  // assign player1 or player2 
   socket.on('startgame', function (username) {
 		if (player1 && !player2) {
 			player2 = username;
@@ -65,27 +59,37 @@ io.on('connection', function(socket){
 			player1 = username;
 			console.log('player1! hey!');
 			io.emit('creategame', username);
+			io.emit('Your turn');
 		};
 	});
 
+  // direct shot to enemy 
   socket.on('shot', function (cell) {
   	socket.broadcast.emit('shot', cell);
   	console.log('shot fired');
   });
 
+  // direct hit to activeplayer
   socket.on('hit', function (cell) {
   	socket.broadcast.emit('hit', cell);
   	console.log('Hit received by server')
-  	//   	if (activeplayer === player1){
-  	// 	activeplayer === player2;
-  	// } else {
-  	// 	activeplayer === player1;
-  	// };
   });
 
+  // direct miss to activeplayer
   socket.on('miss', function (cell){
   	socket.broadcast.emit('miss', cell);
   	console.log('Miss received by server')
+  });
+
+  socket.on('turn complete', function(){
+  	console.log('switching active_user')
+  	if (active_user === player1){
+  		active_user = player2;
+  	} else {
+  		active_user = player1;
+  	};
+  	socket.broadcast.emit('Your turn');
+  	console.log('active_user is: ' + active_user);
   });
 
   socket.on('sendmessage', function(msg){
