@@ -48,7 +48,7 @@ io.on('connection', function(socket){
 			socket.emit('username added to server', connectedUsers);
 		}
 	});
-
+ 
   // assign player1 or player2 
   socket.on('startgame', function (username) {
 		if (player1 && !player2) {
@@ -59,8 +59,18 @@ io.on('connection', function(socket){
 			player1 = username;
 			console.log('player1! hey!');
 			io.emit('creategame', username);
-			io.emit('Your turn');
 		};
+	});
+
+  // notify player when opponent ready
+	socket.on('player ready', function(){
+		socket.broadcast.emit('opponent ready');
+		console.log('opponent ready');
+	});
+
+	socket.on('active_user set', function(){
+		socket.broadcast.emit('Wait');
+		console.log('active_user set')
 	});
 
   // direct shot to enemy 
