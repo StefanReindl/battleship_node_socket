@@ -10,8 +10,8 @@ var connections = {},
 		connectionID = 0,
 		connectedUsers = [],
 		player1 = false,
-		player2 = false,
-		active_user = player1;
+		player2 = false;
+		// active_user = player1;
 
 
 io.on('connection', function(socket){
@@ -79,29 +79,35 @@ io.on('connection', function(socket){
   	console.log('shot fired');
   });
 
-  // direct hit to activeplayer
+  // direct hit to active_user
   socket.on('hit', function (cell) {
   	socket.broadcast.emit('hit', cell);
   	console.log('Hit received by server')
   });
 
-  // direct miss to activeplayer
+  // direct miss to active_user
   socket.on('miss', function (cell){
   	socket.broadcast.emit('miss', cell);
   	console.log('Miss received by server')
   });
 
+  // switch active_user
   socket.on('turn complete', function(){
   	console.log('switching active_user')
-  	if (active_user === player1){
-  		active_user = player2;
-  	} else {
-  		active_user = player1;
-  	};
+  	// if (active_user === player1){
+  	// 	active_user = player2;
+  	// } else {
+  	// 	active_user = player1;
+  	// };
   	socket.broadcast.emit('Your turn');
-  	console.log('active_user is: ' + active_user);
   });
 
+  socket.on('game over', function(){
+  	console.log('Game Over. You Win!');
+  	socket.broadcast.emit('winner');
+  });
+
+  // chat message handling
   socket.on('sendmessage', function(msg){
     console.log('in chat message event');
     io.emit('receivemessage', msg);
