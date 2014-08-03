@@ -11,8 +11,6 @@ var connections = {},
 		connectedUsers = [],
 		player1 = false,
 		player2 = false;
-		// active_user = player1;
-
 
 io.on('connection', function(socket){
   console.log('got a connection');
@@ -68,6 +66,7 @@ io.on('connection', function(socket){
 		console.log('opponent ready');
 	});
 
+	// notify player when opponent is active_user
 	socket.on('active_user set', function(){
 		socket.broadcast.emit('Wait');
 		console.log('active_user set')
@@ -94,11 +93,6 @@ io.on('connection', function(socket){
   // switch active_user
   socket.on('turn complete', function(){
   	console.log('switching active_user')
-  	// if (active_user === player1){
-  	// 	active_user = player2;
-  	// } else {
-  	// 	active_user = player1;
-  	// };
   	socket.broadcast.emit('Your turn');
   });
 
