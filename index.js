@@ -14,7 +14,6 @@ var connections = {},
 
 io.on('connection', function(socket){
   console.log('got a connection');
-  console.log(connections);
 
   socket.on('username', function (username) {
 		if (connections.username) {
@@ -74,20 +73,20 @@ io.on('connection', function(socket){
 
   // direct shot to enemy 
   socket.on('shot', function (cell) {
-  	socket.broadcast.emit('shot', cell);
   	console.log('shot fired');
+  	socket.broadcast.emit('shot', cell);
   });
 
   // direct hit to active_user
   socket.on('hit', function (cell) {
-  	socket.broadcast.emit('hit', cell);
   	console.log('Hit received by server')
+  	socket.broadcast.emit('hit returned', cell);
   });
 
   // direct miss to active_user
   socket.on('miss', function (cell){
-  	socket.broadcast.emit('miss', cell);
   	console.log('Miss received by server')
+  	socket.broadcast.emit('miss returned', cell);
   });
 
   // switch active_user
